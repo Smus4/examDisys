@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	examService "github.com/Smus4/examDisys/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -15,7 +16,7 @@ import (
 type Client struct {
 	name              string
 	currentHighestBid int32
-	servers           map[int32]auction.AuctionClient
+	servers           map[int32]examService.ServiceClient
 }
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 	client := &Client{
 		name:              tempName,
 		currentHighestBid: 0,
-		servers:           make(map[int32]auction.AuctionClient),
+		servers:           make(map[int32]examService.ServiceClient),
 	}
 
 	go handleClient(client)
@@ -52,7 +53,7 @@ func main() {
 }
 
 func (client *Client) makeBid(amount int32) {
-	bid := &auction.RequestBid{
+	bid := &examService.RequestBid{
 		Name:    client.name,
 		Message: client.name + " has made the following bid: " + strconv.Itoa(int(amount)),
 		Amount:  amount,
@@ -75,7 +76,7 @@ func (client *Client) makeBid(amount int32) {
 }
 
 func (client *Client) requestHighestBid() {
-	reqBid := &auction.HighestBidRequest{
+	reqBid := &examService.HighestBidRequest{
 		Message: client.name + " requested the current bid value.",
 	}
 	// outcome, err := client.connection.Result(context.Background(), reqBid)
@@ -148,7 +149,7 @@ func (client *Client) getServerConnection() {
 		log.Printf("--- "+client.name+" succesfully dialed to %v\n", port)
 
 		// defer conn.Close()
-		c := auction.NewAuctionClient(conn)
+		c := examService.NewServiceClient(conn)
 		client.servers[port] = c
 	}
 

@@ -10,12 +10,12 @@ import (
 	"strconv"
 	"time"
 
-	examService "github.com/smus4/examDisys/proto"
+	examService "github.com/Smus4/examDisys/proto"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
-	examService.UnimplementedAuctionServer
+	examService.UnimplementedServiceServer
 	currentHighestBid       int32
 	port                    int
 	currentHighestBidholder string
